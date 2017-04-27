@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TGIF Contest #6</title>
+    <style>
+        #elHeader {
+            display: inline;
+        }
+        
+        #elSpan {
+            display: block;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+
+	<button onclick="replaceSpanToDiv()">Convert Span to Div</button>
+
+    <h1>TGIF Contest #6</h1>
+    
+    <p>Replace all &lt;span&gt; with &lt;div style=&quot;display: inline;&quot;&gt;</p>
+    
+    <span>This is the first span element</span>
+    
+    <div>
+        <span>This is another <span>nested</span> span element</span>
+        <span id="elSpan"><h2 id="elHeader">Header inside a span</h2> Some plain text</span>
+    </div>
+    
+    <p>
+    <span><img alt="Earth" id="elImage"
+        src="http://pierre.chachatelier.fr/programmation/images/mozodojo-original-image.jpg" /></span>
+    </p>
+    
+	<script type="text/javascript">
+	    var elHeader = document.getElementById("elHeader"),
+	        elImage = document.getElementById("elImage"),
+	        elSpan = document.getElementById("elSpan");
+	    
+	    elHeader.addEventListener("mouseover", function() {
+	        elHeader.style.color = "blue";
+	    });
+
+	    window.addEventListener.prototype = function(event){
+	    	console.log(event);
+	    };
+	    
+	    elImage.addEventListener("click", function() {
+	        elImage.style.display = "none";
+	    });
+	    
+	    function replaceSpanToDiv() {
+            var spans = Array.prototype.slice.call(document.getElementsByTagName('span'));
+            console.log(spans);
+
+            spans.forEach(function(span){
+
+	            var attrs = span.attributes,
+	            	div = document.createElement('div');
+	            
+	            div.style.display = "inline";
+	            div.innerHTML = span.innerHTML;
+	            if (attrs && attrs.length) {
+	                for (var j = 0; j < attrs.length; j++) {
+	                    div.setAttribute(attrs[j].name, attrs[j].value);
+	                }
+	            }
+	            span.parentElement.replaceChild(div, span);
+            });
+        };        
+	</script>
+	<script type="text/javascript" src="question1.js"></script>
+	<script type="text/javascript" src="question2.js"></script>
+</body>
+</html>
