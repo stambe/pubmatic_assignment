@@ -41,14 +41,14 @@
 	    elHeader.addEventListener("mouseover", function() {
 	        elHeader.style.color = "blue";
 	    });
-
-	    window.addEventListener.prototype = function(event){
-	    	console.log(event);
-	    };
 	    
 	    elImage.addEventListener("click", function() {
 	        elImage.style.display = "none";
 	    });
+	    
+	    elSpan.addEventListener("mousedown", function() {
+	        alert("mousedown");
+	    }); 
 	    
 	    function replaceSpanToDiv() {
             var spans = Array.prototype.slice.call(document.getElementsByTagName('span'));
