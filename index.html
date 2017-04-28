@@ -50,9 +50,9 @@
 	        alert("mousedown");
 	    }); 
 	    
-	    function replaceSpanToDiv() {
-            var spans = Array.prototype.slice.call(document.getElementsByTagName('span'));
-            console.log(spans);
+	    function replaceSpanToDiv(spanList) {
+            var spans = spanList || Array.prototype.slice.call(document.getElementsByTagName('span')),
+            	childSpans = [];
 
             spans.forEach(function(span){
 
@@ -67,6 +67,10 @@
 	                }
 	            }
 	            span.parentElement.replaceChild(div, span);
+	            childSpans = div.getElementsByTagName("span");
+	            if (childSpans.length > 0){
+	            	replaceSpanToDiv(Array.prototype.slice.call(childSpans));
+	            }
             });
         };        
 	</script>
