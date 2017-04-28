@@ -1,4 +1,4 @@
-EventTarget.prototype.addEventListener = listenerWrapper("add", true);
+EventTarget.prototype.addEventListener = listenerWrapper();
 
 function getEvents(elm) {
 	if (!elm.customEvents){
@@ -7,73 +7,53 @@ function getEvents(elm) {
     return elm.customEvents;
 };
 
-function listenerWrapper(name, bool) {
-    var f = EventTarget.prototype[name + "EventListener"];
+function listenerWrapper() {
+    var listener = EventTarget.prototype["addEventListener"];
     return function (type, callback, capture) {
 
 		if (!this.customEvents) {
 			this.customEvents = [];
+			// Object.defineProperty(this.prototype, customEvents, {value:[]});
 		}
 		this.customEvents.push({type, callback});
-		f.call(this, type, callback, capture);
+		listener.call(this, type, callback, capture);
     };
 }
 
-function replace(){
+function replace() {
 	replaceSpanToDiv(Array.prototype.slice.call(document.getElementsByTagName('span')));
 }
 
 function replaceSpanToDiv(spanList) {
-    var spans = spanList,
-    	childSpans = [];
+    var childSpans = [],
+    	childNode;
 
-    spans.forEach(function(span){
+    spanList.forEach(function(span){
+    	var div = document.createElement('div');
+    		div.style.display = "inline";
+    	
+		var appendEvents = function(newNode, element){
+			var customEvents = element.customEvents;
+			if (customEvents && customEvents.length){
+				customEvents.forEach(function(event){
+					newNode.addEventListener(event.type, event.callback);
+				});
+			}
+			return newNode;
+		}
 
-        var attrs = span.attributes,
-        	div = document.createElement('div'),
-        	spanEvents = getEvents(span);
-        
-        div.style.display = "inline";
-        div.innerHTML = span.innerHTML;
-        div.childNodes = span.childNodes; 
-        div.children = span.children; 
-        div.childElementCount = span.childElementCount; 
-        if (attrs && attrs.length) {
-            for (var j = 0; j < attrs.length; j++) {
-                div.setAttribute(attrs[j].name, attrs[j].value);
-            }
-        }
+    	Array.prototype.slice.call(span.childNodes).forEach(function(child){
+    		var newNode = child.cloneNode(true);
+    		child = appendEvents(newNode, child);
+    		div.appendChild(child);
+    	});
 
-        if (div.children.length > 0){
-        	for (var i = 0; i < div.children.length; i++) {
-        		var child = div.children[i];
-	        	child.parentNode = child.parentElement = div;
-	        	childEvents = getEvents(child);
-	        	if (childEvents){
-	        		childEvents.forEach(function(event){
-		        		child.addEventListener(event.type, event.callback);
-		        	});
-	        	}
-        	}
-        }
+    	// if (div.getElementsByTagName('span').length > 0){
+    	// 	replaceSpanToDiv(Array.prototype.slice.call(div.getElementsByTagName('span')));
+    	// }
+    	span.parentElement.replaceChild(div, span);
+    	console.log(div);
 
-        if (div.childNodes.length > 0){
-        	for (var i = 0; i < div.childNodes.length; i++) {
-        		var child = div.childNodes[i];
-	        	child.parentNode = child.parentElement = div;
-	        };
-	    }
-
-        if (spanEvents) {
-        	spanEvents.forEach(function(event){
-        		div.addEventListener(event.type, event.callback);
-        	});
-        }
-        span.parentElement.replaceChild(div, span);
-        childSpans = div.getElementsByTagName("span");
-        
-        if (childSpans.length > 0){
-        	replaceSpanToDiv(Array.prototype.slice.call(childSpans));
-        }
     });
 }
+
